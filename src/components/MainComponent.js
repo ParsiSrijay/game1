@@ -23,7 +23,7 @@ class Main extends Component{
   }
 	render(){
 		return(
-			<Questions questions={this.props.questions} />
+			<Questions questions={this.props.questions}/>
 		)
 	}
 }

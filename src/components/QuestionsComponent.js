@@ -4,7 +4,12 @@ import { Card,CardText,CardBody,CardTitle,Breadcrumb,BreadcrumbItem } from 'reac
 import { Loading } from './LoadingComponent';
 import { baseUrl } from '../shared/baseUrl';
 import OptionDetails from './OptionComponent';
-
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import AwesomeSlider from 'react-awesome-slider';
+//import AwsSliderStyles from 'react-awesome-slider/src/components/react-awesome-frame/styles.scss';
+import Slider from 'infinite-react-carousel';
+import Carousel from 'react-elastic-carousel';
+import { Alert } from 'react-bootstrap';
 
 function RenderQuestions({question}){
 	return(
@@ -18,10 +23,13 @@ function RenderQuestions({question}){
 const Questions = (props) =>{
 	const questions = props.questions.questions.map((question)=>{
 		return(
-			<div key={question.id} className="col-12 m-1">
+      		
+      		<div key={question.id} className="col-12 m-1">
 				<RenderQuestions question={question} />
-				<OptionDetails options={question.options} />
-			</div>
+				<div className="mt-2">
+					<OptionDetails options={question.options} correctAnswer={question.correctAnswer}/>
+				</div>
+			</div>	
 		);
 	});
 	if(props.questions.isLoading){
@@ -52,7 +60,11 @@ const Questions = (props) =>{
 					</div>
 				</div>
 				<div className="row">
-					{questions}
+					<div className="col-12">
+						<Carousel>
+							{questions}
+						</Carousel>
+					</div>
 				</div>
 			</div>
 		);

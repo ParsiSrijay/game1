@@ -1,6 +1,36 @@
 import React,{ Component } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { Button } from 'reactstrap';
+import { Button} from 'reactstrap';
+import { Alert } from 'react-bootstrap';
+
+function CheckAnswer({correctAnswer,selectedOptions,display}){
+  var c=0;
+  if(display){
+    for(var i=0;i<correctAnswer.length;i++){
+      if(correctAnswer[i].options === selectedOptions[i].options){
+        c=c+1
+      }
+      else{
+        return(
+          <Alert key={1} variant='danger'>
+            Wrong Answer !!!
+          </Alert>
+        );
+      }
+    }
+    return(
+      <Alert key={1} variant='success'>
+        Correct Answer !!!
+      </Alert> 
+    );
+  }
+  else{
+    return(
+      <div>
+      </div>
+    );
+  }
+}
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -28,7 +58,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 const getListStyle = isDraggingOver => ({
   background: isDraggingOver ? "lightblue" : "lightgrey",
   padding: grid,
-  width: 250
 });
 
 class OptionDetails extends Component {
@@ -70,41 +99,50 @@ class OptionDetails extends Component {
   // But in this example everything is just done in one place for simplicity
   render() {
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
-            <>  
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={getListStyle(snapshot.isDraggingOver)}
-              >
-                {this.state.items.map((item, index) => ( 
-                  <Draggable key={item.id} draggableId={item.id.toString()} index={index} isDragDisabled={this.state.dragDisabled}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        style={getItemStyle(
-                          snapshot.isDragging,
-                          provided.draggableProps.style
-                        )}
-                      >
-                        {item.options}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-              <Button onClick={this.handleDrag}>
-                <span>Submit</span>
-              </Button>
-            </>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <>
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <>  
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={getListStyle(snapshot.isDraggingOver)}
+                >
+                  {this.state.items.map((item, index) => ( 
+                    <Draggable key={item.id} draggableId={item.id.toString()} index={index} isDragDisabled={this.state.dragDisabled}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                          className="col-12"
+                        >
+                          {item.options}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              </>
+            )}
+          </Droppable>
+        </DragDropContext>
+        {' '}
+        <div className="mt-2">
+          <Button onClick={this.handleDrag}>
+            <span>Submit</span>
+          </Button>
+        </div>
+        <div className="mt-2">
+          <CheckAnswer correctAnswer={this.props.correctAnswer} selectedOptions={this.state.items} display={this.state.dragDisabled}/>
+        </div>
+      </>
     );
   }
 }
